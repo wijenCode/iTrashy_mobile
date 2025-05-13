@@ -3,38 +3,35 @@ import 'splash_screen.dart';
 import 'login_screen.dart';
 import 'register_screen.dart';
 import 'home_screen.dart';
-import 'profile_screen.dart';
-import 'setor_sampah.dart';
+// import 'pilih_sampah_screen.dart';
 import 'cart_screen.dart';
-// import 'edukasi_screen.dart';
-// import 'artikel_detail.dart';
-// import 'video_detail.dart';
+import 'edukasi_screen.dart';
 import 'order_screen.dart'; 
-import 'edit_order_screen.dart';  
-import 'notif_screen.dart';
-import 'chat_screen.dart';
-import 'order_detail_screen.dart';
+import 'edit_order_screen.dart';
+import 'tukarpoin_screen.dart';
+import 'voucher_detail_screen.dart';
+import 'sembako_detail_screen.dart';
 
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'iTrashy',
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
       routes: {
         '/': (context) => SplashScreen(),
         '/login': (context) => LoginScreen(),
         '/register': (context) => RegisterScreen(),
-        '/home': (context) => HomeScreen(),
-        '/profile': (context) => ProfileScreen(),
-        '/notification': (context) => NotificationScreen(),
-        '/setor_sampah': (context) => SetorSampahScreen(),
-        // '/setor_sampah': (context) => SetorSampahScreen(),
+        '/home': (context) => HomePage(),
+        // '/pilih_sampah': (context) => PilihSampahScreen(),
         '/cart': (context) {
           // Mengambil arguments dari rute
           final selectedItems = ModalRoute.of(context)?.settings.arguments as List<Map<String, dynamic>>;
@@ -42,27 +39,16 @@ class MyApp extends StatelessWidget {
         },
         '/order': (context) => OrderScreen(), 
         '/edit_order': (context) => EditOrderScreen(),
-        '/order_detail': (context) {
-          final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
-          return OrderDetailScreen(
-            address: args['address'],
-            pickupDate: args['pickupDate'],
-            pickupTime: args['pickupTime'],
-            selectedItems: args['selectedItems'],
-            totalWeight: args['totalWeight'],
-            totalPoints: args['totalPoints'],
-            serviceFee: args['serviceFee'],
-            finalTotal: args['finalTotal'],
-          );
-        },
-        '/chat': (context) {
-          final pickerName = ModalRoute.of(context)?.settings.arguments as String;
-          return ChatScreen(pickerName: pickerName);
-        },
+        '/edukasi': (context) => const EdukasiBeranda(),
+        '/tukarpoin': (context) => TukarPoinScreen(),
+        '/voucher_detail': (context) => VoucherDetailScreen(),
+        '/sembako_detail': (context) => SembakoDetailScreen(),
       },
       theme: ThemeData(
         fontFamily: 'SF Pro Display',
         primaryColor: Colors.white,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        useMaterial3: true,
       ),
     );
   }
