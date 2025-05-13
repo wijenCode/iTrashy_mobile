@@ -1,162 +1,376 @@
 import 'package:flutter/material.dart';
 
-class MyApp extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
+
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: HomePage(),
-      theme: ThemeData(
-        fontFamily: 'SF Pro Display',
-        primaryColor: Colors.green,
-      ),
-    );
-  }
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class HomePage extends StatefulWidget {
-  @override
-  _HomePageState createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  int _currentBannerIndex = 0;
-  int _currentIndex = 0;
+class _HomeScreenState extends State<HomeScreen> {
+  int _selectedIndex = 0;
   final PageController _bannerController = PageController();
+  int _currentBannerIndex = 0;
+
+                
+  // Daftar gambar lokal
+  List<String> imagePaths = [
+    'assets/images/gambar1.png',
+    'assets/images/gambar2.png',
+    'assets/images/gambar3.png',
+    'assets/images/gambar4.png',
+    'assets/images/gambar5.png',
+  ];
+
+  // Kontroller untuk mengatur perpindahan halaman
+  void navigateToPage(int index) {
+    setState(() {
+      _selectedIndex = index;
+      // Di sini Anda bisa menambahkan logika untuk berpindah halaman
+      switch (index) {
+        case 0:
+          // Sudah di halaman Home, tidak perlu navigasi
+          break;
+        case 1:
+          Navigator.pushNamed(context, '/order');
+          break;
+        case 3:
+          Navigator.pushNamed(context, '/notification');
+          break;
+        case 4:
+          Navigator.pushNamed(context, '/profile');
+          break;
+      }
+      // Misalnya menggunakan Navigator.push atau mengubah widget yang ditampilkan
+    });
+  }
+  
+  // Mengatur timer untuk slide banner
+  void setupBannerTimer() {
+    Future.delayed(const Duration(seconds: 3), () {
+      if (mounted) {
+        _bannerController.animateToPage(
+          (_currentBannerIndex + 1) % 5,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+        setupBannerTimer(); // Memanggil kembali untuk membuat loop
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setupBannerTimer();
+  }
+
+  @override
+  void dispose() {
+    _bannerController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildHeader(),
-                SizedBox(height: 16),
-                _buildBalanceCard(),
-                SizedBox(height: 16),
-                _buildBannerCarousel(),
-                SizedBox(height: 20),
-                _buildEducationSection(),
-              ],
-            ),
-          ),
-        ),
-      ),
-      bottomNavigationBar: _buildBottomNavigationBar(),
-    );
-  }
-
-  Widget _buildHeader() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CircleAvatar(
-                radius: 20,
-                backgroundImage: NetworkImage(
-                  'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cHJvZmlsZSUyMHBpY3R1cmV8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=800&q=60',
+              // Header with profile
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 20,
+                          backgroundImage: NetworkImage(
+                              'https://i.pravatar.cc/300'),
+                        ),
+                        const SizedBox(width: 10),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Hello!',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.black54,
+                              ),
+                            ),
+                            Row(
+                              children: [
+                                const Text(
+                                  'Lucas Scott',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(width: 5),
+                                Icon(
+                                  Icons.verified,
+                                  color: Colors.amber[600],
+                                  size: 16,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.notifications_outlined),
+                      onPressed: () {},
+                    ),
+                  ],
                 ),
               ),
-              SizedBox(width: 8),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Hello!',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey[700],
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        'Lucas Scott',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(width: 4),
-                      Icon(
-                        Icons.verified,
-                        color: Colors.amber,
-                        size: 16,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ],
-          ),
-          IconButton(
-            icon: Icon(Icons.notifications_outlined),
-            onPressed: () {},
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildBalanceCard() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Color(0xFF4AD394),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
+              
+              // Balance Card
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.green[400],
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Column(
                   children: [
-                    CircleAvatar(
-                      backgroundColor: Colors.white,
-                      radius: 15,
-                      child: Text(
-                        'T',
-                        style: TextStyle(
-                          color: Colors.blue,
-                          fontWeight: FontWeight.bold,
-                        ),
+                    // Balance part
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Color(0xFFE7F4E8),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 14,
+                            backgroundColor: Colors.blue[700],
+                            child: const Text(
+                              'T',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          const Expanded(
+                            child: Text(
+                              '7.500',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Icon(
+                            Icons.chevron_right,
+                            color: Colors.blue[700],
+                          ),
+                        ],
                       ),
                     ),
-                    SizedBox(width: 8),
-                    Text(
-                      '7.500',
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                    
+                    // Menu icons
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          _buildMenuIcon(Icons.swap_horiz, 'Transfer'),
+                          _buildMenuIcon(Icons.card_giftcard, 'Voucher'),
+                          _buildMenuIcon(Icons.inventory_2, 'Sembako'),
+                          _buildMenuIcon(Icons.favorite, 'Donasi'),
+                        ],
                       ),
                     ),
                   ],
                 ),
-                Icon(
-                  Icons.chevron_right,
-                  color: Colors.white,
+              ),
+
+
+              // Banner
+              const SizedBox(height: 16),
+              SizedBox(
+                height: 160,
+                child: PageView.builder(
+                  controller: _bannerController,
+                  itemCount: imagePaths.length, // Sesuaikan jumlah item dengan banyak gambar
+                  onPageChanged: (index) {
+                    setState(() {
+                      _currentBannerIndex = index;
+                    });
+                  },
+                  itemBuilder: (context, index) {
+                    // Menampilkan gambar lokal berdasarkan index
+                    return Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 16),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        image: DecorationImage(
+                          image: AssetImage(imagePaths[index]), // Menggunakan gambar berdasarkan index
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    );
+                  },
                 ),
-              ],
+              ),
+
+              // Banner indicator
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(
+                  imagePaths.length, // Sesuaikan dengan jumlah gambar
+                  (index) => Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 3),
+                    height: 8,
+                    width: 8,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: _currentBannerIndex == index
+                          ? Colors.blue
+                          : Colors.grey[300],
+                    ),
+                  ),
+                ),
+              ),
+
+              
+              // Education Section
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 24, 16, 12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Edukasi',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {},
+                      child: Text(
+                        'See more',
+                        style: TextStyle(
+                          color: Colors.blue[600],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              
+              // Education Cards
+              SizedBox(
+                height: 220,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  children: [
+                    _buildEducationCard(
+                      'https://images.unsplash.com/photo-1562077981-4d7eafd44932?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2940&q=80',
+                      'Mendaur ulang sampah secara mandiri',
+                      'by iTrashy • 1 months ago',
+                    ),
+                    _buildEducationCard(
+                      'https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2940&q=80',
+                      'Membuat pupuk organik untuk tanaman',
+                      'by iTrashy • 1 months ago',
+                    ),
+                  ],
+                ),
+              ),
+              
+              // Bottom padding for scroll space
+              const SizedBox(height: 80),
+            ],
+          ),
+        ),
+      ),
+      
+      // Floating Bottom Navigation Bar
+      bottomNavigationBar: Container(
+        height: 80,
+        margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Container(
+              height: 60,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(30),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.3),
+                    spreadRadius: 2,
+                    blurRadius: 10,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Expanded(
+                    child: _buildNavItem(Icons.home, 'Home', 0),
+                  ),
+                  Expanded(
+                    child: _buildNavItem(Icons.receipt, 'Order', 1),
+                  ),
+                  const Expanded(child: SizedBox()), // Space for center button
+                  Expanded(
+                    child: _buildNavItem(Icons.notifications_outlined, 'Notif', 3),
+                  ),
+                  Expanded(
+                    child: _buildNavItem(Icons.person_outline, 'Profile', 4),
+                  ),
+                ],
+              ),
             ),
-            SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _buildActionButton(Icons.swap_horiz, 'Transfer', Colors.white),
-                _buildActionButton(Icons.card_giftcard, 'Voucher', Colors.white),
-                _buildActionButton(Icons.inventory_2, 'Sembako', Colors.white),
-                _buildActionButton(Icons.favorite, 'Donasi', Colors.white),
-              ],
+            // Center floating button
+            Positioned(
+              top: 0,
+              child: InkWell(
+                onTap: () {
+                  // Navigasi ke halaman Setor Sampah ketika tombol tengah ditekan
+                  Navigator.pushNamed(context, '/setor_sampah');
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Container(
+                    height: 60,
+                    width: 60,
+                    decoration: BoxDecoration(
+                      color: Colors.deepPurple[400],
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.delete_outline,
+                      color: Colors.white,
+                      size: 30,
+                    ),
+                  ),
+                ),
+              ),
             ),
           ],
         ),
@@ -164,249 +378,110 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildActionButton(IconData icon, String label, Color color) {
+  Widget _buildMenuIcon(IconData icon, String label) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          padding: EdgeInsets.all(10),
+          padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.2),
-            borderRadius: BorderRadius.circular(12),
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
           ),
           child: Icon(
             icon,
-            color: color,
+            color: Colors.green[700],
             size: 24,
           ),
         ),
-        SizedBox(height: 4),
+        const SizedBox(height: 8),
         Text(
           label,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 12,
-            color: color,
+            color: Colors.white,
+            fontWeight: FontWeight.w500,
           ),
         ),
       ],
     );
   }
 
-  Widget _buildBannerCarousel() {
-    return Column(
-      children: [
-        Container(
-          height: 180,
-          child: PageView(
-            controller: _bannerController,
-            onPageChanged: (index) {
-              setState(() {
-                _currentBannerIndex = index;
-              });
-            },
-            children: [
-              _buildBannerItem('https://images.unsplash.com/photo-1611284446314-60a58ac0deb9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2940&q=80'),
-              _buildBannerItem('https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2940&q=80'),
-              _buildBannerItem('https://images.unsplash.com/photo-1611284446314-60a58ac0deb9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2940&q=80'),
-              _buildBannerItem('https://images.unsplash.com/photo-1528190336454-13cd56b45b5a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2940&q=80'),
-            ],
-          ),
-        ),
-        SizedBox(height: 8),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(
-            4,
-            (index) => Container(
-              width: 8,
-              height: 8,
-              margin: EdgeInsets.symmetric(horizontal: 4),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: _currentBannerIndex == index
-                    ? Colors.blue
-                    : Colors.grey.withOpacity(0.3),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildBannerItem(String imageUrl) {
+  Widget _buildEducationCard(String imageUrl, String title, String subtitle) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 2),
+      width: 200,
+      margin: const EdgeInsets.only(right: 16),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        image: DecorationImage(
-          image: NetworkImage(imageUrl),
-          fit: BoxFit.cover,
-        ),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
       ),
-    );
-  }
-
-  Widget _buildEducationSection() {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'Edukasi',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            TextButton(
-              onPressed: () {},
-              child: Text(
-                'See more',
-                style: TextStyle(
-                  color: Colors.blue,
-                ),
-              ),
-            ),
-          ],
-        ),
-        SizedBox(height: 8),
-        Container(
-          height: 220, // Adjust this value to change the height of the cards
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            children: [
-              _buildEducationCard(
-                'https://images.unsplash.com/photo-1562077981-4d7eafd44932?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2940&q=80',
-                'Mendaur ulang sampah secara mandiri',
-                'iTrash',
-                '1 months ago',
-              ),
-              SizedBox(width: 16),
-              _buildEducationCard(
-                'https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2940&q=80',
-                'Membuat pupuk o untuk tanaman',
-                'iTrash',
-                '1 months ago',
-              ),
-              SizedBox(width: 16),
-              _buildEducationCard(
-                'https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2940&q=80',
-                'Membuat pupuk o untuk tanaman',
-                'iTrash',
-                '1 months ago',
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildEducationCard(
-      String imageUrl, String title, String author, String time) {
-    return Container(
-      width: 200, // Adjust this value to change the width of the cards
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            height: 120,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              image: DecorationImage(
-                image: NetworkImage(imageUrl),
-                fit: BoxFit.cover,
-              ),
+          ClipRRect(
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+            child: Image.network(
+              imageUrl,
+              height: 120,
+              width: double.infinity,
+              fit: BoxFit.cover,
             ),
           ),
-          SizedBox(height: 8),
-          Text(
-            title,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 14,
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  subtitle,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey[600],
+                  ),
+                ),
+              ],
             ),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-          SizedBox(height: 4),
-          Row(
-            children: [
-              Text(
-                'by $author',
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: 12,
-                ),
-              ),
-              Text(
-                ' • $time',
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: 12,
-                ),
-              ),
-            ],
           ),
         ],
       ),
     );
   }
 
-  Widget _buildBottomNavigationBar() {
-    return BottomNavigationBar(
-      type: BottomNavigationBarType.fixed,
-      currentIndex: _currentIndex,
-      selectedItemColor: Colors.blue,
-      unselectedItemColor: Colors.grey,
-      showSelectedLabels: true,
-      showUnselectedLabels: true,
-      onTap: (index) {
-        setState(() {
-          _currentIndex = index;
-        });
-        if (index == 1) { // Index 1 corresponds to the "Artikel" icon
-          Navigator.pushNamed(context, '/order');
-        }
-        if (index == 2) { // Index 2 corresponds to the "Toko" icon
-          Navigator.pushNamed(context, '/pilih_sampah');
-        }
+  Widget _buildNavItem(IconData icon, String label, int index) {
+    final bool isSelected = _selectedIndex == index;
+    
+    return InkWell(
+      onTap: () {
+        navigateToPage(index);
       },
-      items: [
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: 'Home',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.article),
-          label: 'Order',
-        ),
-        BottomNavigationBarItem(
-          icon: Container(
-            decoration: BoxDecoration(
-              color: Colors.deepPurple,
-              shape: BoxShape.circle,
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Icon(
-                Icons.storefront,
-                color: Colors.white,
-              ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            icon,
+            color: isSelected ? Colors.blue[600] : Colors.grey[500],
+          ),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 12,
+              color: isSelected ? Colors.blue[600] : Colors.grey[500],
+              fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
             ),
           ),
-          label: 'Setor',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.notifications_outlined),
-          label: 'Notifikasi',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.person_outline),
-          label: 'Profil',
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

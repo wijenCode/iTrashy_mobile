@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'order_detail_screen.dart';
 
 class CartScreen extends StatefulWidget {
   final List<Map<String, dynamic>> selectedItems;
@@ -53,7 +54,32 @@ class _CartScreenState extends State<CartScreen> {
               ElevatedButton(
                 child: Text('Continue', style: TextStyle(color: Colors.white)),
                 onPressed: () {
-                  // Handle continue action
+                  if (_addressController.text.isNotEmpty &&
+                      _selectedDate != null &&
+                      _selectedTime != null) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => OrderDetailScreen(
+                          address: _addressController.text,
+                          pickupDate: _selectedDate!,
+                          pickupTime: _selectedTime!,
+                          selectedItems: widget.selectedItems,
+                          totalWeight: totalWeight,
+                          totalPoints: totalPoints,
+                          serviceFee: serviceFee,
+                          finalTotal: finalTotal,
+                        ),
+                      ),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Please fill all required fields'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFF006FFD),
