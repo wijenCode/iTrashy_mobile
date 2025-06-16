@@ -11,6 +11,8 @@ import 'edit_order_screen.dart';
 import 'tukarpoin_screen.dart';
 import 'voucher_detail_screen.dart';
 import 'sembako_detail_screen.dart';
+import 'transfer_screen.dart';
+import 'transfer_detail_screen.dart';
 
 
 void main() {
@@ -43,6 +45,8 @@ class MyApp extends StatelessWidget {
         '/tukarpoin': (context) => TukarPoinScreen(),
         '/voucher_detail': (context) => VoucherDetailScreen(),
         '/sembako_detail': (context) => SembakoDetailScreen(),
+        '/transfer': (context) => TransferScreen(),
+        '/transfer_detail': (context) => TransferDetailScreen(),
       },
       theme: ThemeData(
         fontFamily: 'SF Pro Display',

@@ -28,17 +28,17 @@ class SembakoDetailScreen extends StatelessWidget {
               child: Image.asset(
                 'assets/images/beras.png',
                 width: double.infinity,
-                height: 140,
+                height: 160,
                 fit: BoxFit.cover,
               ),
             ),
             Container(
-              transform: Matrix4.translationValues(0, -32, 0),
+              transform: Matrix4.translationValues(0, 0, 0),
               padding: EdgeInsets.symmetric(horizontal: 24),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: 16),
+                  SizedBox(height: 24),
                   Text(
                     'Beras 1 Kg',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
@@ -48,7 +48,6 @@ class SembakoDetailScreen extends StatelessWidget {
                     'Tukar poin yang sudah Anda kumpulkan dengan beras 1kg. Dengan menukarkan poin, Anda bisa mendapatkan beras berkualitas, sebagai hasil dari kegiatan pengelolaan sampah yang Anda lakukan. Jadi, semakin aktif mengelola sampah, semakin banyak beras yang bisa Anda dapatkan!',
                     style: TextStyle(fontSize: 15, color: Colors.black87),
                   ),
-                  SizedBox(height: 24),
                   _PoinHargaCard(poin: '32.500', harga: '15.000'),
                   SizedBox(height: 20),
                   SizedBox(

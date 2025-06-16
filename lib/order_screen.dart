@@ -222,20 +222,74 @@ class _OrderScreenState extends State<OrderScreen> with SingleTickerProviderStat
   }
 
   Widget _buildHistoryTab() {
+    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    final transferHistory = args != null ? args['transferHistory'] : null;
     List<OrderItem> historyOrders = _orderList.getHistoryOrders();
-    
-    if (historyOrders.isEmpty) {
+
+    List<Widget> historyWidgets = [];
+    if (transferHistory != null) {
+      historyWidgets.add(_buildTransferHistoryCard(transferHistory));
+    }
+
+    if (historyOrders.isEmpty && transferHistory == null) {
       return Center(
         child: Text('Belum ada riwayat pesanan'),
       );
     }
-    
-    return ListView.builder(
+
+    historyWidgets.addAll(List.generate(historyOrders.length, (index) => _buildOrderCard(historyOrders[index])));
+
+    return ListView(
       padding: EdgeInsets.all(16),
-      itemCount: historyOrders.length,
-      itemBuilder: (context, index) {
-        return _buildOrderCard(historyOrders[index]);
-      },
+      children: historyWidgets,
+    );
+  }
+
+  Widget _buildTransferHistoryCard(Map<String, dynamic> data) {
+    return Card(
+      elevation: 4,
+      margin: EdgeInsets.only(bottom: 16),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Transfer',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.green,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    'Selesai',
+                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 12),
+            _buildInfoRow(Icons.account_balance, data['bankOrEwallet'] ?? '-'),
+            SizedBox(height: 12),
+            _buildInfoRow(Icons.numbers, data['accountOrNumber'] ?? '-'),
+            SizedBox(height: 12),
+            _buildInfoRow(Icons.attach_money, 'Nominal: ${data['nominal'] ?? '-'}'),
+            SizedBox(height: 12),
+            _buildInfoRow(Icons.money_off, 'Biaya Admin: ${data['adminFee'] ?? '-'}'),
+            SizedBox(height: 12),
+            _buildInfoRow(Icons.check_circle, 'Total: ${data['total'] ?? '-'}'),
+            SizedBox(height: 12),
+            _buildInfoRow(Icons.calendar_today, data['date'] != null ? DateFormat('dd/MM/yyyy HH:mm').format(DateTime.parse(data['date'])) : '-'),
+          ],
+        ),
+      ),
     );
   }
 

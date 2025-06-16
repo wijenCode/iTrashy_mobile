@@ -167,7 +167,9 @@ class _HomePageState extends State<HomePage> {
   Widget _buildActionButton(IconData icon, String label, Color color) {
     return GestureDetector(
       onTap: () {
-        if (label == 'Voucher' || label == 'Sembako') {
+        if (label == 'Transfer') {
+          Navigator.pushNamed(context, '/transfer');
+        } else if (label == 'Voucher' || label == 'Sembako') {
           Navigator.pushNamed(context, '/tukarpoin');
         }
       },

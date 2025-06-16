@@ -20,35 +20,35 @@ class VoucherDetailScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(24),
-                bottomRight: Radius.circular(24),
-              ),
-              child: Image.asset(
-                'assets/images/indomaret.png',
-                width: double.infinity,
-                height: 140,
-                fit: BoxFit.cover,
-              ),
-            ),
-            Container(
-              transform: Matrix4.translationValues(0, -32, 0),
-              padding: EdgeInsets.symmetric(horizontal: 24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
+            Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(24),
+                    bottomRight: Radius.circular(24),
+                  ),
+                  child: Image.asset(
+                    'assets/images/indomaret_bg.png',
+                    width: double.infinity,
+                    height: 160,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: -32,
+                  child: Center(
                     child: Container(
-                      padding: EdgeInsets.all(8),
+                      padding: EdgeInsets.all(12),
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(
                             color: Colors.black12,
-                            blurRadius: 8,
-                            offset: Offset(0, 2),
+                            blurRadius: 12,
+                            offset: Offset(0, 4),
                           ),
                         ],
                       ),
@@ -60,7 +60,16 @@ class VoucherDetailScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(height: 16),
+                ),
+              ],
+            ),
+            Container(
+              transform: Matrix4.translationValues(0, 16, 0),
+              padding: EdgeInsets.symmetric(horizontal: 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 32),
                   Text(
                     'Voucher Belanja di Indomaret senilai Rp 5.000',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
@@ -74,7 +83,6 @@ class VoucherDetailScreen extends StatelessWidget {
                   Text('Syarat dan Ketentuan:', style: TextStyle(fontWeight: FontWeight.bold)),
                   SizedBox(height: 6),
                   Text('• Voucher hanya berlaku di aplikasi Indomaret.\n• Voucher tidak dapat diuangkan atau digabungkan dengan promo lain.\n• Cek masa berlaku voucher sebelum digunakan.\n• Voucher hanya berlaku untuk transaksi dengan nominal lebih dari Rp 10.000.', style: TextStyle(fontSize: 14, color: Colors.black87)),
-                  SizedBox(height: 24),
                   _PoinHargaCard(poin: '32.500', harga: '5.000'),
                   SizedBox(height: 24),
                 ],
